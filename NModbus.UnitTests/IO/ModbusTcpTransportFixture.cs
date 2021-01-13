@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Castle.Core.Logging;
 using Moq;
 using NModbus.Data;
 using NModbus.IO;

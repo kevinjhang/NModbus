@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NModbus.Interfaces\NModbus.Interfaces.csproj" />
     <ProjectReference Include="..\NModbus\NModbus.csproj" />
   </ItemGroup>
 

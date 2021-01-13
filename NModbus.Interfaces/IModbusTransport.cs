@@ -1,5 +1,4 @@
 ﻿using System;
-using NModbus.IO;
 
 namespace NModbus
 {

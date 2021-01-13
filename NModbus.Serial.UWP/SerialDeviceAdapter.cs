@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
-using NModbus.IO;
+using NModbus;
 
 namespace NModbus.Serial
 {

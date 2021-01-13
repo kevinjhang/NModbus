@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NModbus.IO
+namespace NModbus
 {
     /// <summary>
     ///     Represents a serial resource.
