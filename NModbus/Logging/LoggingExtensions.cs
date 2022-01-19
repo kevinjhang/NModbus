@@ -96,11 +96,11 @@ namespace NModbus.Logging
                     prefix = frame.DoesCrcMatch() ? validPrefix : invalidPrefix;
                 }
 
-                string message = message = $"{prefix}:{mode}:{string.Join(" ", frame.Select(b => b.ToString("X2")))}";
+                string message = message = $"{prefix},{mode},{string.Join(" ", frame.Select(b => b.ToString("X2")))}";
 
                 if (endPoint != null)
                 {
-                    message = $"{endPoint}:" + message;
+                    message = $"{endPoint}," + message;
                 }
 
                 logger.Log(LoggingLevel.Frame, message);
