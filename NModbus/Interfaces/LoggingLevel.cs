@@ -34,6 +34,11 @@
         /// <summary>
         /// A critical log should describe an unrecoverable application or system crash, or a catastrophic failure that requires immediate attention. 
         /// </summary>
-        Critical = 5
+        Critical = 5,
+
+        /// <summary>
+        /// A frame log should be logged when transferring data.
+        /// </summary>
+        Frame = 6
     }
 }

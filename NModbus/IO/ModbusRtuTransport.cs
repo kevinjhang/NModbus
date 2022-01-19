@@ -84,7 +84,7 @@ namespace NModbus.IO
         {
             byte[] frame = ReadResponse();
 
-            Logger.LogFrameRx(frame);
+            Logger.LogFrameRx("RTU", frame);
 
             return CreateResponse<T>(frame);
         }
@@ -102,7 +102,7 @@ namespace NModbus.IO
         {
             byte[] frame = ReadResponse();
 
-            Logger.LogFrameIgnoreRx(frame);
+            Logger.LogFrameIgnoreRx("RTU", frame);
         }
 
         public override byte[] ReadRequest()
@@ -111,7 +111,7 @@ namespace NModbus.IO
             byte[] frameEnd = Read(RequestBytesToRead(frameStart));
             byte[] frame = frameStart.Concat(frameEnd).ToArray();
 
-            Logger.LogFrameRx(frame);
+            Logger.LogFrameRx("RTU", frame);
 
             return frame;
         }

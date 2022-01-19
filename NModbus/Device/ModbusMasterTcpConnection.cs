@@ -92,7 +92,7 @@ namespace NModbus.Device
 
                 Logger.Debug($"Read frame from Master at {EndPoint} completed {readBytes} bytes");
                 byte[] frame = _mbapHeader.Concat(_messageFrame).ToArray();
-                Logger.Trace($"RX from Master at {EndPoint}: {string.Join(", ", frame)}");
+                Logger.LogFrameRx("TCP", frame, EndPoint);
 
                 var request = _modbusFactory.CreateModbusRequest(_messageFrame);
                 request.TransactionId = (ushort)IPAddress.NetworkToHostOrder(BitConverter.ToInt16(frame, 0));
@@ -109,7 +109,7 @@ namespace NModbus.Device
 
                     // write response
                     byte[] responseFrame = Transport.BuildMessageFrame(response);
-                    Logger.Information($"TX to Master at {EndPoint}: {string.Join(", ", responseFrame)}");
+                    Logger.LogFrameTx("TCP", responseFrame, EndPoint);
                     await Stream.WriteAsync(responseFrame, 0, responseFrame.Length).ConfigureAwait(false);
                 }
             }

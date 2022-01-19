@@ -85,34 +85,42 @@ namespace NModbus.Logging
 
         #region Frame logging
 
-        private static void LogFrame(this IModbusLogger logger, string validPrefix, string invalidPrefix, byte[] frame)
+        private static void LogFrame(this IModbusLogger logger, string validPrefix, string invalidPrefix, string mode, byte[] frame, string endPoint = null)
         {
-            if (logger.ShouldLog(LoggingLevel.Trace))
+            if (logger.ShouldLog(LoggingLevel.Frame))
             {
-                if (logger.ShouldLog(LoggingLevel.Trace))
-                {
-                    string prefix = frame.DoesCrcMatch() ? validPrefix : invalidPrefix;
+                string prefix = validPrefix;
 
-                    logger.Trace($"{prefix}: {string.Join(" ", frame.Select(b => b.ToString("X2")))}");
+                if (mode == "RTU")
+                {
+                    prefix = frame.DoesCrcMatch() ? validPrefix : invalidPrefix;
                 }
+
+                string message = message = $"{prefix}:{mode}:{string.Join(" ", frame.Select(b => b.ToString("X2")))}";
+
+                if (endPoint != null)
+                {
+                    message = $"{endPoint}:" + message;
+                }
+
+                logger.Log(LoggingLevel.Frame, message);
             }
         }
 
-        internal static void LogFrameTx(this IModbusLogger logger, byte[] frame)
+        internal static void LogFrameTx(this IModbusLogger logger, string mode, byte[] frame, string endPoint = null)
         {
-            logger.LogFrame("TX", "tx", frame);
+            logger.LogFrame("TX", "tx", mode, frame, endPoint);
         }
 
-        internal static void LogFrameRx(this IModbusLogger logger, byte[] frame)
+        internal static void LogFrameRx(this IModbusLogger logger, string mode, byte[] frame, string endPoint = null)
         {
-            logger.LogFrame("RX", "rx", frame);
+            logger.LogFrame("RX", "rx", mode, frame, endPoint);
         }
 
-        internal static void LogFrameIgnoreRx(this IModbusLogger logger, byte[] frame)
+        internal static void LogFrameIgnoreRx(this IModbusLogger logger, string mode, byte[] frame)
         {
-            logger.LogFrame("IR", "ir", frame);
+            logger.LogFrame("IR", "ir", mode, frame);
         }
-
         #endregion  
     }
 }

@@ -57,7 +57,7 @@ namespace NModbus.IO
 
             // convert hex to bytes
             byte[] frame = ModbusUtility.HexToBytes(frameHex);
-            Logger.Trace($"RX: {string.Join(", ", frame)}");
+            Logger.LogFrameRx("ASC", frame);
 
             if (frame.Length < 3)
             {
@@ -65,6 +65,17 @@ namespace NModbus.IO
             }
 
             return frame;
+        }
+
+        public override void Write(IModbusMessage message)
+        {
+            DiscardInBuffer();
+
+            byte[] frame = BuildMessageFrame(message);
+
+            Logger.LogFrameTx("ASC", frame);
+
+            StreamResource.Write(frame, 0, frame.Length);
         }
 
         public override void IgnoreResponse()
