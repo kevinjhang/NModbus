@@ -123,6 +123,28 @@ namespace NModbus.Device
                     while (!cancellationToken.IsCancellationRequested)
                     {
                         TcpClient client = await Server.AcceptTcpClientAsync().ConfigureAwait(false);
+
+                        if (_masters.Count >= 50)
+                        {
+                            bool closed = false;
+
+                            foreach (ModbusMasterTcpConnection master in _masters.Values.ToArray())
+                            {
+                                if (!master.TcpClient.Connected)
+                                {
+                                    string endPoint = master.TcpClient.Client.RemoteEndPoint.ToString();
+                                    OnMasterConnectionClosedHandler(master, new TcpConnectionEventArgs(endPoint));
+                                    closed = true;
+                                }
+                            }
+
+                            if (!closed)
+                            {
+                                client.Dispose();
+                                continue;
+                            }
+                        }
+
                         var masterConnection = new ModbusMasterTcpConnection(client, this, ModbusFactory, Logger);
                         masterConnection.ModbusMasterTcpConnectionClosed += OnMasterConnectionClosedHandler;
                         _masters.TryAdd(client.Client.RemoteEndPoint.ToString(), masterConnection);
