@@ -114,7 +114,7 @@ namespace NModbus.Device
         {
             Logger.Information("Start Modbus Tcp Server.");
             // TODO: add state {stopped, listening} and check it before starting
-            Server.Start();
+            Server.Start(50);
             // Cancellation code based on https://stackoverflow.com/a/47049129/11066760
             using (cancellationToken.Register(() => Server.Stop()))
             {
