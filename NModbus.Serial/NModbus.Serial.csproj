@@ -16,7 +16,6 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <NuspecProperties>version=$(PackageVersion);</NuspecProperties>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<NuspecFile>NModbus.Serial.nuspec</NuspecFile>  
   </PropertyGroup>
 	
   <ItemGroup>
