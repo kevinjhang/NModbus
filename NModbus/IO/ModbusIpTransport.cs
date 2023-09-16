@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using NModbus.Logging;
-using NModbus.Message;
 using NModbus.Unme.Common;
 
 namespace NModbus.IO

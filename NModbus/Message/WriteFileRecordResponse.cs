@@ -1,8 +1,5 @@
 ﻿using NModbus.Data;
-using NModbus.Unme.Common;
 using System;
-using System.Linq;
-using System.Net;
 
 namespace NModbus.Message
 {

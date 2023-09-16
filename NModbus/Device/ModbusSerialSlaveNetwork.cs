@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using NModbus.Logging;
-using NModbus.Message;
 
 namespace NModbus.Device
 {

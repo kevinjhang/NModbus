@@ -1,6 +1,4 @@
-﻿using NModbus.Message;
-
-namespace NModbus
+﻿namespace NModbus
 {
     /// <summary>
     /// A Modbus slave message handler.

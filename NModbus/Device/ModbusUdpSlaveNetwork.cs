@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NModbus.IO;
 using NModbus.Logging;
-using NModbus.Message;
 using NModbus.Unme.Common;
 
 namespace NModbus.Device

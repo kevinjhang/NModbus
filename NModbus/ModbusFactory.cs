@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NModbus.Device.MessageHandlers;
 using System.Linq;
 using System.Net.Sockets;
