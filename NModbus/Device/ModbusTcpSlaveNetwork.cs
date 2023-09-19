@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,9 @@ namespace NModbus.Device
     /// </summary>
     internal class ModbusTcpSlaveNetwork : ModbusSlaveNetwork
     {
+#if TIMER
         private const int TimeWaitResponse = 1000;
+#endif
         private readonly object _serverLock = new object();
 
         private readonly ConcurrentDictionary<string, ModbusMasterTcpConnection> _masters =
@@ -29,15 +32,10 @@ namespace NModbus.Device
 #if TIMER
         private Timer _timer;
 #endif
-        internal ModbusTcpSlaveNetwork(TcpListener tcpListener, IModbusFactory modbusFactory,  IModbusLogger logger)
+        internal ModbusTcpSlaveNetwork(TcpListener tcpListener, IModbusFactory modbusFactory, IModbusLogger logger)
             : base(new EmptyTransport(modbusFactory), modbusFactory, logger)
         {
-            if (tcpListener == null)
-            {
-                throw new ArgumentNullException(nameof(tcpListener));
-            }
-
-            _server = tcpListener;
+            _server = tcpListener ?? throw new ArgumentNullException(nameof(tcpListener));
         }
 
 #if TIMER
@@ -144,6 +142,8 @@ namespace NModbus.Device
                             }
                         }
 
+                        client.Client.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
+                        client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 5 * 60 * 1000);
                         var masterConnection = new ModbusMasterTcpConnection(client, this, ModbusFactory, Logger);
                         masterConnection.ModbusMasterTcpConnectionClosed += OnMasterConnectionClosedHandler;
                         _masters.TryAdd(client.Client.RemoteEndPoint.ToString(), masterConnection);
@@ -197,9 +197,7 @@ namespace NModbus.Device
 
                             foreach (var key in _masters.Keys)
                             {
-                                ModbusMasterTcpConnection connection;
-
-                                if (_masters.TryRemove(key, out connection))
+                                if (_masters.TryRemove(key, out ModbusMasterTcpConnection connection))
                                 {
                                     connection.ModbusMasterTcpConnectionClosed -= OnMasterConnectionClosedHandler;
                                     connection.Dispose();
@@ -211,6 +209,7 @@ namespace NModbus.Device
             }
         }
 
+#if TIMER
         private static bool IsSocketConnected(Socket socket)
         {
             bool poll = socket.Poll(TimeWaitResponse, SelectMode.SelectRead);
@@ -218,7 +217,6 @@ namespace NModbus.Device
             return poll && available;
         }
 
-#if TIMER
         private void OnTimer(object sender, ElapsedEventArgs e)
         {
             foreach (var master in _masters.ToList())
@@ -232,9 +230,7 @@ namespace NModbus.Device
 #endif
         private void OnMasterConnectionClosedHandler(object sender, TcpConnectionEventArgs e)
         {
-            ModbusMasterTcpConnection connection;
-
-            if (!_masters.TryRemove(e.EndPoint, out connection))
+            if (!_masters.TryRemove(e.EndPoint, out ModbusMasterTcpConnection connection))
             {
                 string msg = $"EndPoint {e.EndPoint} cannot be removed, it does not exist.";
                 throw new ArgumentException(msg);
